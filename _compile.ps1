@@ -1,5 +1,5 @@
 ﻿# 开发版编译。先让正在运行的灵栖退出，再发布到 run\，不启动。
-# 不传 OfficialBuild，所以版本是 0.1.0 Dev，数据目录是 SpiritPerchDev。
+# 不传 OfficialBuild，所以关于页版本是 version.txt 里的号再加 Dev，数据目录是 SpiritPerchDev。
 # 用法：
 #   .\ _compile.ps1
 #   .\ _compile.ps1 -ForceKill   # 优雅退出失败时才用，避免和 Cursor 抢文件锁

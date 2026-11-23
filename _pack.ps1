@@ -5,36 +5,24 @@
 #   或双击 _pack.cmd
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
-$csprojPath = Join-Path $root "src\SpiritNest.App\SpiritNest.App.csproj"
-$issPath = Join-Path $root "installer\SpiritNest.iss"
-
-$csproj = Get-Content $csprojPath -Raw -Encoding UTF8
-$iss = Get-Content $issPath -Raw -Encoding UTF8
-
-function Read-Match([string]$text, [string]$pattern) {
-  $m = [regex]::Match($text, $pattern)
-  if ($m.Success) { return $m.Groups[1].Value.Trim() }
-  return "（未读到）"
+$versionPath = Join-Path $root "version.txt"
+if (-not (Test-Path -LiteralPath $versionPath)) {
+  Write-Host "找不到 version.txt。"
+  exit 1
 }
-
-$asmVersion = Read-Match $csproj '<Version>([^<]+)</Version>'
-$aboutVersion = Read-Match $csproj "OfficialBuild\)' == 'true'"">([^<]+)</InformationalVersion>"
-$setupVersion = Read-Match $iss '#define MyAppVersion "([^"]+)"'
+$version = (Get-Content $versionPath -Raw -Encoding UTF8).Trim()
+if ([string]::IsNullOrWhiteSpace($version)) {
+  Write-Host "version.txt 是空的。"
+  exit 1
+}
 
 Write-Host ""
 Write-Host "打包前请确认版本号"
-Write-Host "  安装包版本  installer\SpiritNest.iss"
-Write-Host "              MyAppVersion = $setupVersion"
-Write-Host "  程序版本    src\SpiritNest.App\SpiritNest.App.csproj"
-Write-Host "              Version = $asmVersion"
-Write-Host "  关于页版本  同一 csproj 里安装版 InformationalVersion = $aboutVersion"
-Write-Host "  将生成      dist\SpiritPerch-Setup-$setupVersion.exe"
+Write-Host "  版本号      version.txt = $version"
+Write-Host "  程序版本、关于页、安装包都引用这一处。"
+Write-Host "  将生成      dist\SpiritPerch-Setup-$version.exe"
 Write-Host ""
-if ($asmVersion -ne $setupVersion -or $aboutVersion -ne $setupVersion) {
-  Write-Host "这三处版本号不一致。安装包文件名以安装脚本为准。" -ForegroundColor Yellow
-  Write-Host ""
-}
-Write-Host "要改版本号就先改这两个文件并保存，再回到这里继续。"
+Write-Host "要改版本号就先改 version.txt 并保存，再回到这里继续。"
 Write-Host ""
 
 $answer = Read-Host "继续打包？输入 Y 继续，其他键取消"

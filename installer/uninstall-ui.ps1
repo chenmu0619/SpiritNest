@@ -62,8 +62,15 @@ $title.Size = New-Object System.Drawing.Size(361, 32)
 $title.BackColor = [System.Drawing.Color]::White
 $surface.Controls.Add($title)
 
+$appVersion = ""
+$appExe = Join-Path (Split-Path -Parent $UninstallExe) "SpiritPerch.exe"
+if (Test-Path -LiteralPath $appExe) {
+    $appVersion = ([System.Diagnostics.FileVersionInfo]::GetVersionInfo($appExe).ProductVersion).Trim()
+}
+$versionLabel = if ($appVersion) { " $appVersion" } else { "" }
+
 $info = New-Object System.Windows.Forms.Label
-$info.Text = "这将从您的电脑上卸载灵栖 0.1.0。`r`n`r`n勾选要在卸载时执行的操作。`r`n`r`n点击「确定卸载」后才会开始，点击「取消」则不做任何更改。"
+$info.Text = "这将从您的电脑上卸载灵栖$versionLabel。`r`n`r`n勾选要在卸载时执行的操作。`r`n`r`n点击「确定卸载」后才会开始，点击「取消」则不做任何更改。"
 $info.Location = New-Object System.Drawing.Point(211, 64)
 $info.Size = New-Object System.Drawing.Size(361, 110)
 $info.BackColor = [System.Drawing.Color]::White

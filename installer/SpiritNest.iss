@@ -8,7 +8,12 @@
 
 #define MyAppName "灵栖"
 #define MyAppNameZh "灵栖"
-#define MyAppVersion "0.1.0"
+#define VersionHandle FileOpen(SourcePath + "..\version.txt")
+#define MyAppVersion Trim(FileRead(VersionHandle))
+#expr FileClose(VersionHandle)
+#if MyAppVersion == ""
+  #error version.txt 是空的
+#endif
 #define MyAppPublisher "SpiritNest"
 #define MyAppExeName "SpiritPerch.exe"
 #define PublishDir "..\dist\publish"

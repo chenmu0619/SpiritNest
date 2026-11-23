@@ -8,10 +8,11 @@
     <ApplicationIcon>Assets\SpiritNest.ico</ApplicationIcon>
     <RootNamespace>SpiritNest</RootNamespace>
     <AssemblyName>SpiritPerch</AssemblyName>
-    <Version>0.1.0</Version>
+    <!-- 版本号只写在仓库根目录 version.txt。 -->
+    <Version>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\..\version.txt').Trim())</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-    <InformationalVersion Condition="'$(OfficialBuild)' != 'true'">0.1.0 Dev</InformationalVersion>
-    <InformationalVersion Condition="'$(OfficialBuild)' == 'true'">0.1.0</InformationalVersion>
+    <InformationalVersion Condition="'$(OfficialBuild)' != 'true'">$(Version) Dev</InformationalVersion>
+    <InformationalVersion Condition="'$(OfficialBuild)' == 'true'">$(Version)</InformationalVersion>
     <DefineConstants Condition="'$(OfficialBuild)' != 'true'">$(DefineConstants);DEV_BUILD</DefineConstants>
     <Product>灵栖</Product>
     <Description>灵栖</Description>

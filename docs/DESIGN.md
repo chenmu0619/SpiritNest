@@ -151,7 +151,7 @@ items[]:
 - 单实例：互斥量 `Local\SpiritNest.SingleInstance.Mutex.v3`，管道 `SpiritNest.SingleInstance.Pipe.v3`。管道仍接受 `exit`，供发布脚本优雅退出。
 - 托盘使用 Hardcodet.NotifyIcon。关机或注销时必须先卸托盘再退出，避免拖住关机。
 - 默认不要管理员权限。
-- 版本号在 `SpiritNest.App.csproj` 的 `<Version>` 与 `installer/SpiritNest.iss` 的 `MyAppVersion`，当前都是 **0.1.0**。
+- 版本号只写在仓库根目录的 `version.txt`。程序版本、关于页和安装包都引用它，当前是 **0.1.0**。
 
 
 
