@@ -1,0 +1,26 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5C8670EF-93E4-4B8B-BE5F-93CCF284BBE8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpiritNest.App", "src\SpiritNest.App\SpiritNest.App.csproj", "{D28DAA05-083A-4148-8338-E48FFCAA9BEE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D28DAA05-083A-4148-8338-E48FFCAA9BEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D28DAA05-083A-4148-8338-E48FFCAA9BEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D28DAA05-083A-4148-8338-E48FFCAA9BEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D28DAA05-083A-4148-8338-E48FFCAA9BEE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D28DAA05-083A-4148-8338-E48FFCAA9BEE} = {5C8670EF-93E4-4B8B-BE5F-93CCF284BBE8}
+	EndGlobalSection
+EndGlobal

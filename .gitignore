@@ -1,0 +1,25 @@
+## Build
+**/bin/
+**/obj/
+**/publish/
+dist/
+run/
+run-staging/
+*.user
+*.suo
+.vs/
+*.log
+_*_log.txt
+
+## NuGet
+**/packages/
+*.nupkg
+
+## OS
+Thumbs.db
+Desktop.ini
+
+## Local
+.cursor/
+.cursorignore
+*.DotSettings.user

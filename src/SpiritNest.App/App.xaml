@@ -1,0 +1,269 @@
+<Application x:Class="SpiritNest.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:tb="http://www.hardcodet.net/taskbar"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Theme.Ink" Color="#E0000000"/>
+            <SolidColorBrush x:Key="Theme.Muted" Color="#8C000000"/>
+            <SolidColorBrush x:Key="Theme.Border" Color="#24000000"/>
+            <SolidColorBrush x:Key="Theme.Hover" Color="#12000000"/>
+            <SolidColorBrush x:Key="Theme.Press" Color="#1C000000"/>
+            <SolidColorBrush x:Key="Theme.Accent" Color="#FF4F9DFF"/>
+            <SolidColorBrush x:Key="Theme.AccentSoft" Color="#284F9DFF"/>
+            <SolidColorBrush x:Key="Theme.PillSelected" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="Theme.ScrollThumb" Color="#64000000"/>
+            <SolidColorBrush x:Key="Theme.MenuBg" Color="#FFFFF8F0"/>
+            <SolidColorBrush x:Key="Theme.MenuBorder" Color="#24000000"/>
+            <SolidColorBrush x:Key="Theme.MenuDisabled" Color="#8C000000"/>
+            <FontFamily x:Key="QWeather">pack://application:,,,/Assets/qweather-icons.ttf#qweather-icons</FontFamily>
+
+            <!-- Flat tray / context menu -->
+            <Style x:Key="FlatTrayMenuItem" TargetType="MenuItem">
+                <Setter Property="Foreground" Value="#FF1A1A1A"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="MenuItem">
+                            <Grid Background="Transparent">
+                                <Border x:Name="Bd"
+                                        Background="Transparent"
+                                        CornerRadius="8"
+                                        Margin="4,0"
+                                        Padding="10,8"
+                                        MinWidth="176">
+                                    <DockPanel LastChildFill="True">
+                                        <Path x:Name="Arrow" DockPanel.Dock="Right"
+                                              Margin="12,0,0,0" VerticalAlignment="Center"
+                                              Data="M0,0 L4,3.5 L0,7"
+                                              Stroke="{DynamicResource Theme.Muted}"
+                                              StrokeThickness="1.2" Fill="Transparent"
+                                              Width="5" Height="8" Stretch="None"
+                                              Visibility="Collapsed"/>
+                                        <!-- Switch for checkable items (开机启动 / 极简模式) -->
+                                        <Border x:Name="SwitchTrack" DockPanel.Dock="Right"
+                                                Width="34" Height="20" CornerRadius="10"
+                                                Background="#FFE5E5EA"
+                                                VerticalAlignment="Center"
+                                                Margin="14,0,0,0"
+                                                Visibility="Collapsed">
+                                            <Ellipse x:Name="SwitchThumb" Width="16" Height="16"
+                                                     Fill="White"
+                                                     HorizontalAlignment="Left"
+                                                     Margin="2,0,2,0"/>
+                                        </Border>
+                                        <ContentPresenter ContentSource="Header"
+                                                          VerticalAlignment="Center"
+                                                          RecognizesAccessKey="True"/>
+                                    </DockPanel>
+                                </Border>
+                                <Popup x:Name="PART_Popup"
+                                       Placement="Right"
+                                       HorizontalOffset="2"
+                                       AllowsTransparency="True"
+                                       Focusable="False"
+                                       IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                       PopupAnimation="Fade">
+                                    <Border Background="#FFF2F2F7"
+                                            BorderBrush="#14000000"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            Padding="0,4"
+                                            MinWidth="140">
+                                        <StackPanel IsItemsHost="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Role" Value="SubmenuHeader">
+                                    <Setter TargetName="Arrow" Property="Visibility" Value="Visible"/>
+                                </Trigger>
+                                <Trigger Property="IsCheckable" Value="True">
+                                    <Setter TargetName="SwitchTrack" Property="Visibility" Value="Visible"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="SwitchTrack" Property="Background" Value="#FF34C759"/>
+                                    <Setter TargetName="SwitchThumb" Property="HorizontalAlignment" Value="Right"/>
+                                </Trigger>
+                                <Trigger Property="IsHighlighted" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#14000000"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Foreground" Value="{DynamicResource Theme.MenuDisabled}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="FlatTraySeparator" TargetType="Separator">
+                <Setter Property="Margin" Value="10,4"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Separator">
+                            <Border Height="1" Background="#14000000" Margin="{TemplateBinding Margin}"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="FlatTrayContextMenu" TargetType="ContextMenu">
+                <!-- Solid fill — no frost / translucency -->
+                <Setter Property="Background" Value="#FFF2F2F7"/>
+                <Setter Property="BorderBrush" Value="#14000000"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="0,4"/>
+                <Setter Property="HasDropShadow" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ContextMenu">
+                            <Border x:Name="MenuChrome"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="12"
+                                    Padding="{TemplateBinding Padding}">
+                                <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Flat scrollbar (panel + settings) -->
+            <SolidColorBrush x:Key="FlatScrollThumbBrush" Color="#668A968E"/>
+            <SolidColorBrush x:Key="FlatScrollThumbHoverBrush" Color="#998A968E"/>
+            <SolidColorBrush x:Key="FlatScrollThumbDragBrush" Color="#B34F9DFF"/>
+
+            <Style x:Key="FlatScrollBarThumb" TargetType="Thumb">
+                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Thumb">
+                            <Border x:Name="Bd"
+                                    Background="{StaticResource FlatScrollThumbBrush}"
+                                    CornerRadius="3"
+                                    Margin="1,0"/>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource FlatScrollThumbHoverBrush}"/>
+                                </Trigger>
+                                <Trigger Property="IsDragging" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{StaticResource FlatScrollThumbDragBrush}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="FlatScrollBarPageButton" TargetType="RepeatButton">
+                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="RepeatButton">
+                            <Border Background="Transparent"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <ControlTemplate x:Key="FlatVerticalScrollBarTemplate" TargetType="ScrollBar">
+                <Grid Background="Transparent" Width="8">
+                    <Track x:Name="PART_Track" IsDirectionReversed="True" Focusable="False">
+                        <Track.DecreaseRepeatButton>
+                            <RepeatButton Command="ScrollBar.PageUpCommand"
+                                          Style="{StaticResource FlatScrollBarPageButton}"/>
+                        </Track.DecreaseRepeatButton>
+                        <Track.Thumb>
+                            <Thumb Style="{StaticResource FlatScrollBarThumb}" MinHeight="28"/>
+                        </Track.Thumb>
+                        <Track.IncreaseRepeatButton>
+                            <RepeatButton Command="ScrollBar.PageDownCommand"
+                                          Style="{StaticResource FlatScrollBarPageButton}"/>
+                        </Track.IncreaseRepeatButton>
+                    </Track>
+                </Grid>
+            </ControlTemplate>
+
+            <ControlTemplate x:Key="FlatHorizontalScrollBarTemplate" TargetType="ScrollBar">
+                <Grid Background="Transparent" Height="8">
+                    <Track x:Name="PART_Track" IsDirectionReversed="False" Focusable="False">
+                        <Track.DecreaseRepeatButton>
+                            <RepeatButton Command="ScrollBar.PageLeftCommand"
+                                          Style="{StaticResource FlatScrollBarPageButton}"/>
+                        </Track.DecreaseRepeatButton>
+                        <Track.Thumb>
+                            <Thumb Style="{StaticResource FlatScrollBarThumb}" MinWidth="28">
+                                <Thumb.Template>
+                                    <ControlTemplate TargetType="Thumb">
+                                        <Border x:Name="Bd"
+                                                Background="{StaticResource FlatScrollThumbBrush}"
+                                                CornerRadius="3"
+                                                Margin="0,1"/>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource FlatScrollThumbHoverBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsDragging" Value="True">
+                                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource FlatScrollThumbDragBrush}"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Track.Thumb>
+                        <Track.IncreaseRepeatButton>
+                            <RepeatButton Command="ScrollBar.PageRightCommand"
+                                          Style="{StaticResource FlatScrollBarPageButton}"/>
+                        </Track.IncreaseRepeatButton>
+                    </Track>
+                </Grid>
+            </ControlTemplate>
+
+            <Style TargetType="ScrollBar">
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Style.Triggers>
+                    <Trigger Property="Orientation" Value="Vertical">
+                        <Setter Property="Width" Value="8"/>
+                        <Setter Property="MinWidth" Value="8"/>
+                        <Setter Property="Template" Value="{StaticResource FlatVerticalScrollBarTemplate}"/>
+                    </Trigger>
+                    <Trigger Property="Orientation" Value="Horizontal">
+                        <Setter Property="Height" Value="8"/>
+                        <Setter Property="MinHeight" Value="8"/>
+                        <Setter Property="Template" Value="{StaticResource FlatHorizontalScrollBarTemplate}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <tb:TaskbarIcon x:Key="TrayIcon"
+                            x:Shared="false"
+                            ToolTipText="灵栖"
+                            Visibility="Visible">
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu Style="{StaticResource FlatTrayContextMenu}" Loaded="TrayMenu_Loaded">
+                        <MenuItem x:Name="TrayAutostartItem" Style="{StaticResource FlatTrayMenuItem}"
+                                  Header="开机启动" IsCheckable="True" Click="TrayAutostart_Click" />
+                        <MenuItem x:Name="TrayMinimalItem" Style="{StaticResource FlatTrayMenuItem}"
+                                  Header="极简模式" IsCheckable="True" Click="TrayMinimal_Click" />
+                        <Separator Style="{StaticResource FlatTraySeparator}" />
+                        <MenuItem Style="{StaticResource FlatTrayMenuItem}" Header="设置" Click="TraySettings_Click" />
+                        <Separator Style="{StaticResource FlatTraySeparator}" />
+                        <MenuItem Style="{StaticResource FlatTrayMenuItem}" Header="退出" Click="TrayExit_Click" />
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

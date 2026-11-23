@@ -1,0 +1,81 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\SpiritNest.ico</ApplicationIcon>
+    <RootNamespace>SpiritNest</RootNamespace>
+    <AssemblyName>SpiritPerch</AssemblyName>
+    <Version>0.1.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <InformationalVersion Condition="'$(OfficialBuild)' != 'true'">0.1.0 Dev</InformationalVersion>
+    <InformationalVersion Condition="'$(OfficialBuild)' == 'true'">0.1.0</InformationalVersion>
+    <DefineConstants Condition="'$(OfficialBuild)' != 'true'">$(DefineConstants);DEV_BUILD</DefineConstants>
+    <Product>灵栖</Product>
+    <Description>灵栖</Description>
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+    <!-- Faster cold start for publish / autostart -->
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <TieredCompilationQuickJit>true</TieredCompilationQuickJit>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <Target Name="MoveSatellitesToLanguages" AfterTargets="Publish">
+    <PropertyGroup>
+      <_LangOut>$(PublishDir)Languages\zh-Hans\</_LangOut>
+    </PropertyGroup>
+    <ItemGroup>
+      <_SatDll Include="$(PublishDir)zh-Hans\*.dll" />
+    </ItemGroup>
+    <MakeDir Directories="$(_LangOut)" Condition="'@(_SatDll)' != ''" />
+    <Copy SourceFiles="@(_SatDll)" DestinationFolder="$(_LangOut)" SkipUnchangedFiles="true" Condition="'@(_SatDll)' != ''" />
+    <Delete Files="@(_SatDll)" Condition="'@(_SatDll)' != ''" />
+    <RemoveDir Directories="$(PublishDir)zh-Hans" Condition="'@(_SatDll)' != ''" />
+    <!-- Older publishes left other cultures beside the exe. They are not shipped. -->
+    <ItemGroup>
+      <_StaleCulture Include="cs;de;es;fr;it;ja;ko;pl;pt-BR;ru;tr;zh-Hant;zh-TW;ar;bg;ca;da;el;fi;he;hr;hu;id;nb;nl;no;ro;sk;sl;sv;th;uk;vi" />
+      <_StaleDir Include="@(_StaleCulture->'$(PublishDir)%(Identity)')" />
+    </ItemGroup>
+    <RemoveDir Directories="@(_StaleDir)" />
+    <Delete Files="$(PublishDir)SpiritNest.exe;$(PublishDir)SpiritNest.dll;$(PublishDir)SpiritNest.pdb;$(PublishDir)SpiritNest.deps.json;$(PublishDir)SpiritNest.runtimeconfig.json" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <PackageReference Include="SharpVectors" Version="1.8.4.2" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\qweather-icons.ttf" />
+    <None Remove="Assets\area.json" />
+    <EmbeddedResource Include="Assets\area.json">
+      <LogicalName>SpiritNest.Assets.area.json</LogicalName>
+    </EmbeddedResource>
+    <None Include="Assets\SpiritNest.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\SpiritNest.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\bing.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\baidu.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\google.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Assets\sougou.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="CopyAreaJson" AfterTargets="Build;Publish">
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\Assets\area.json" DestinationFiles="$(TargetDir)Assets\area.json" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(MSBuildProjectDirectory)\Assets\area.json" DestinationFiles="$(PublishDir)Assets\area.json" SkipUnchangedFiles="true" Condition="'$(PublishDir)' != ''" />
+  </Target>
+</Project>

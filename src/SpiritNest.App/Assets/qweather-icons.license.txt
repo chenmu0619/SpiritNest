@@ -1,0 +1,4 @@
+QWeather Icons
+Copyright QWeather 和风天气 (https://www.qweather.com)
+Icons: Creative Commons Attribution 4.0 (https://creativecommons.org/licenses/by/4.0/)
+Font file from https://github.com/qwd/Icons (qweather-icons 1.8.0)
